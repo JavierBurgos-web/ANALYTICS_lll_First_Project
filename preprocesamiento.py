@@ -40,18 +40,37 @@ df_general = df_general.drop_duplicates(subset='EmployeeID', keep='first')
 df_manager = df_manager.drop_duplicates(subset='EmployeeID', keep='first')
 df_retirement = df_retirement.drop_duplicates(subset='EmployeeID', keep='first')
 
-# Eliminar las variables con mismo valor
-columnas_a_eliminar = ['EmployeeCount', 'Over18', 'StandardHours', 'InfoDate', 'InfoDate']
-df_general = df_general.drop(columns=columnas_a_eliminar, errors='ignore')
+# Eliminar la columna sin nombre 
+df_employees = df_employees.drop(columns=['Unnamed: 0'])
+df_general = df_general.drop(columns=['Unnamed: 0'])
+df_manager = df_manager.drop(columns=['Unnamed: 0'])
+df_retirement = df_retirement.drop(columns=['Unnamed: 0.1', 'Unnamed: 0'])
 
 # Verifica las columnas actuales
+print(df_employees.columns)
 print(df_general.columns)
+print(df_manager.columns)
+print(df_retirement.columns)
 
-# Eliminar la columna sin nombre 
-df_general = df_general.drop(columns=[col for col in df_general.columns if 'Unnamed' in col])
+# Eliminar las variables con mismo valor
+df_employees = df_employees.drop(columns=['DateSurvey'])
+df_general = df_general.drop(columns=['EmployeeCount','Over18','StandardHours','InfoDate'])
+df_manager = df_manager.drop(columns=['SurveyDate'])
+df_retirement = df_retirement.drop(columns=['Attrition'])
 
-# Verifica las columnas después de la eliminación
+# Verifica las columnas actuales
+print(df_employees.columns)
 print(df_general.columns)
+print(df_manager.columns)
+print(df_retirement.columns)
 
+# Union de Bases de datos
+df_merged = df_employees.merge(df_general, on='EmployeeID', how='outer')
+df_merged = df_merged.merge(df_manager, on='EmployeeID', how='outer')
+df_merged = df_merged.merge(df_retirement, on='EmployeeID', how='outer')
+df_merged
 
+# Exportacion del dataframe df_merge en el repositorio DATA
+
+df_merged.to_csv('DATA/df_merged.csv', index=False)
 
