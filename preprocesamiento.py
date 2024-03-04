@@ -1,7 +1,7 @@
-
-import subprocess
+##import subprocess
 #subprocess.run(['pip', 'install', 'seaborn'])
 #subprocess.run(['pip', 'install', 'matplotlib'])
+#subprocess.run(['pip', 'install', 'pandas'])
 
 #### Cargar paquetes siempre al inicio
 import pandas as pd ### para manejo de datos
@@ -123,7 +123,7 @@ nombres_traducidos = {
     'YearsAtCompany': 'AñosEnLaEmpresa',
     'YearsSinceLastPromotion': 'AñosDesdeUltimaPromocion',
     'YearsWithCurrManager': 'AñosConActualGerente',
-    'EnvironmentSatisfaction': 'SatisfaccionAmbiental',
+    'EnvironmentSatisfaction': 'SatisfaccionAmbienteLab',
     'JobSatisfaction': 'SatisfaccionLaboral',
     'WorkLifeBalance': 'EquilibrioVidaLaboral',
     'JobInvolvement': 'InvolucramientoLaboral',

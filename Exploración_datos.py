@@ -23,6 +23,7 @@ fig=df_final.Retirado.hist(bins=50,ec='black') ## no hay atípicos
 fig.grid(False)
 plt.show()
 
+
 ### explorar variables numéricas  ###
 df_final.hist(figsize=(15, 15), bins=20)
 plt.suptitle('Distribución de Variables Numéricas', y=1.02)
@@ -44,4 +45,7 @@ for column in ['ViajesDeNegocios', 'Departamento', 'CampoDeEducacion', 'Genero',
     plt.title(f'Distribución de {column}')
     plt.show()
 
+df_type = df_drop_unique
 
+
+### Variable respuesta VS categoricas  ###
