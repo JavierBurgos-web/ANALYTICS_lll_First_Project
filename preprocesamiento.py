@@ -34,7 +34,6 @@ df_manager.sort_values(by=['EmployeeID'],ascending=0).head(100)
 df_retirement.sort_values(by=['EmployeeID'],ascending=0).head(100)
 
 ##### resumen con información tablas faltantes y tipos de variables y hacer correcciones
-
 df_general.info(verbose=True)
 df_employees.info()
 df_manager.info()
@@ -62,7 +61,7 @@ print(df_retirement.columns)
 df_employees = df_employees.drop(columns=['DateSurvey'])
 df_general = df_general.drop(columns=['EmployeeCount','Over18','StandardHours','InfoDate'])
 df_manager = df_manager.drop(columns=['SurveyDate'])
-df_retirement = df_retirement.drop(columns=['Attrition','retirementType'])
+df_retirement = df_retirement.drop(columns=['retirementType'])
 
 # Verifica las columnas actuales
 print(df_employees.columns)
@@ -77,8 +76,6 @@ df_employees['EnvironmentSatisfaction'].fillna(0, inplace=True)
 df_employees['JobSatisfaction'].fillna(0, inplace=True)
 df_employees['WorkLifeBalance'].fillna(0, inplace=True)
 
-# Eliminar filas con valores nulos o en blanco en la columna 'resignationReason'
-df_retirement = df_retirement.dropna(subset=['resignationReason'], inplace=False)
 
 # Verificar el resultado
 df_general.info(verbose=True)
@@ -89,9 +86,20 @@ df_retirement.info()
 # Combinar los primeros tres DataFrames
 df_combined = pd.merge(df_general, df_employees, on='EmployeeID', how='inner')
 df_combined = pd.merge(df_combined, df_manager, on='EmployeeID', how='inner')
-
 # Combinar con el DataFrame de retiro
 df_final = pd.merge(df_combined, df_retirement, on='EmployeeID', how='left')
+df_final
+
+# cambiar los valores nulos de la columna 'retirementDate' por 'NoRetirement'
+df_final['retirementDate'].fillna(0, inplace=True)
+# cambiar los valores nulos de la columna 'resignationReason' por 'NoReason'
+df_final['resignationReason'].fillna('NoRetirement', inplace=True)
+
+df_final.value_counts('resignationReason')
+
+# cambair la variable Attrition a binomial 0 y 1
+df_final['Attrition'] = df_final['Attrition'].apply(lambda x: 1 if x == 'Yes' else 0)
+df_final
 
 # Diccionario de mapeo para traducir los nombres
 nombres_traducidos = {
@@ -122,11 +130,15 @@ nombres_traducidos = {
     'PerformanceRating': 'CalificacionDeDesempeño',
     'retirementDate': 'FechaDeRetiro',
     'retirementType': 'TipoDeRetiro',
-    'resignationReason': 'MotivoDeRenuncia'
+    'resignationReason': 'MotivoDeRenuncia',
+    'Attrition': 'Retirado'
 }
 
 # Aplicar el cambio de nombres al DataFrame
 df_final.rename(columns=nombres_traducidos, inplace=True)
+
+# cambiar el tipo de variable IDEmpleado 
+df_final['IDEmpleado'] = df_final['IDEmpleado'].astype(str)
 
 df_final.info()
 df_final.describe
@@ -134,16 +146,8 @@ df_final.describe
 df_final.to_csv('DATA/df_final.csv', index=False)
 
 
-## Poner en el archivo exploración datos: 
-df_final.hist(figsize=(15, 15), bins=20)
-plt.suptitle('Distribución de Variables Numéricas', y=1.02)
-plt.show()
 
-for column in ['ViajesDeNegocios', 'Departamento', 'CampoDeEducacion', 'Genero', 'RolDeTrabajo', 'EstadoCivil']:
-    plt.figure(figsize=(10, 6))
-    sns.countplot(x=column, data=df_final)
-    plt.title(f'Distribución de {column}')
-    plt.show()
+
 
 # Selecciona solo las variables numéricas para la matriz de correlación
 
@@ -151,13 +155,4 @@ for column in ['ViajesDeNegocios', 'Departamento', 'CampoDeEducacion', 'Genero',
 
 
 
-# Union de Bases de datos
-#df_merged = df_employees.merge(df_general, on='EmployeeID', how='outer')
-#df_merged = df_merged.merge(df_manager, on='EmployeeID', how='outer')
-#df_merged = df_merged.merge(df_retirement, on='EmployeeID', how='outer')
-#df_merged
-
-# Exportacion del dataframe df_merge en el repositorio DATA
-
-#df_merged.to_csv('DATA/df_merged.csv', index=False)
 
