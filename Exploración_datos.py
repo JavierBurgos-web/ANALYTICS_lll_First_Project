@@ -190,16 +190,56 @@ plt.show()
 ### Selección de variables ###
 pd.set_option('display.max_columns', None)
 print(df_final)
-df_final_V2 = df_final.copy()
-# Para cambiar el tipo de dato puede utilizar la función astype de pandas
-df_final.BusinessTravel = df_final['BusinessTravel'].astype(str)
-df_final.Department = df_final['Department'].astype(str)
-df_final.Gender = df_final['Gender'].astype(str)
-df_final.JobRole = df_final['JobRole'].astype(str)
-df_final.MaritalStatus = df_final['MaritalStatus'].astype(str)
 
+df_final_V2 = df_final.copy()
+
+# Para cambiar el tipo de dato puede utilizar la función astype de pandas
+df_final_V2.BusinessTravel = df_final_V2['BusinessTravel'].astype(str)
+df_final_V2.Department = df_final_V2['Department'].astype(str)
+df_final_V2.Gender = df_final_V2['Gender'].astype(str)
+df_final_V2.JobRole = df_final_V2['JobRole'].astype(str)
+df_final_V2.MaritalStatus = df_final_V2['MaritalStatus'].astype(str)
 
 # Convierta las columnas en variables dummy utilizando pd.get_dummies()
-df_final = pd.get_dummies(df_final)
+df_final_V2 = pd.get_dummies(df_final_V2, columns=['BusinessTravel', 'Department', 'Gender', 'JobRole', 'MaritalStatus'])
 # Imprimir primeras 3 filas
-df_final.head()
+df_final_V2.head()
+
+### Seleccion de variables por metodo Wrapper ###
+#Backward selection
+df_final_V2_int = df_final_V2.select_dtypes(include = ["number"]) # filtrar solo variables númericas
+df_final_V2_int = df_final_V2.drop('Attrition', axis = 1)
+y = df_final_V2['Attrition']
+df_final_V2_int.head()
+
+#df_final_V2.fillna(0, inplace=True)
+# Separación de caracteristicas y target
+#X_class = df_final_V2.drop(['Attrition'], axis=1)
+#y_class = df_final_V2['Attrition']
+
+#print(X_class.shape)
+#print(y_class.shape)
+# Separación de caracteristicas y Attrition (X , y)
+#y = df_final_V2.Attrition
+#X = df_final_V2.drop(["Attrition"], axis = 1)
+# Separación en conjuntos de entrenamiento y validación con 80% de muestras para entrenamiento
+
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42)
+
+#Imprimir Tamaño de dataset
+
+#print("Tamaño del conjunto de entrenamiento:",X_train.shape )
+#print("Tamaño del conjunto de validación:", X_test.shape )
+
+
+#Nombre de caracteristicas númericas
+#numeric_columns=list(X.select_dtypes('float64').columns)
+
+#Estandarización de variables númericas
+#pipeline=ColumnTransformer([("std_num", StandardScaler() , numeric_columns)], remainder='passthrough')
+#X_train_std = pipeline.fit_transform(X_train)
+#X_test_std = pipeline.transform(X_test)
+
+#Separación de caracteristicas númericas y categóricas
+#numeric_columns=list(X.select_dtypes('float64').columns)
+#categorical_columns=list(X.select_dtypes('object').columns)
