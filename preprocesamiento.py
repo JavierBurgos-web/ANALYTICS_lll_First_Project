@@ -102,43 +102,43 @@ df_final['Attrition'] = df_final['Attrition'].apply(lambda x: 1 if x == 'Yes' el
 df_final
 
 # Diccionario de mapeo para traducir los nombres
-nombres_traducidos = {
-    'Age': 'Edad',
-    'BusinessTravel': 'ViajesDeNegocios',
-    'Department': 'Departamento',
-    'DistanceFromHome': 'DistanciaDesdeCasa',
-    'Education': 'Educacion',
-    'EducationField': 'CampoDeEducacion',
-    'EmployeeID': 'IDEmpleado',
-    'Gender': 'Genero',
-    'JobLevel': 'NivelDeTrabajo',
-    'JobRole': 'RolDeTrabajo',
-    'MaritalStatus': 'EstadoCivil',
-    'MonthlyIncome': 'IngresoMensual',
-    'NumCompaniesWorked': 'NumEmpresasTrabajadas',
-    'PercentSalaryHike': 'AumentoSalarioPorcentual',
-    'StockOptionLevel': 'NivelOpcionesAcciones',
-    'TotalWorkingYears': 'AñosTotalesTrabajados',
-    'TrainingTimesLastYear': 'VecesEntrenadoUltimoAnio',
-    'YearsAtCompany': 'AñosEnLaEmpresa',
-    'YearsSinceLastPromotion': 'AñosDesdeUltimaPromocion',
-    'YearsWithCurrManager': 'AñosConActualGerente',
-    'EnvironmentSatisfaction': 'SatisfaccionAmbienteLab',
-    'JobSatisfaction': 'SatisfaccionLaboral',
-    'WorkLifeBalance': 'EquilibrioVidaLaboral',
-    'JobInvolvement': 'InvolucramientoLaboral',
-    'PerformanceRating': 'CalificacionDeDesempeño',
-    'retirementDate': 'FechaDeRetiro',
-    'retirementType': 'TipoDeRetiro',
-    'resignationReason': 'MotivoDeRenuncia',
-    'Attrition': 'Retirado'
-}
+#nombres_traducidos = {
+#    'Age': 'Edad',
+#   'BusinessTravel': 'ViajesDeNegocios',
+#   'Department': 'Departamento',
+#    'DistanceFromHome': 'DistanciaDesdeCasa',
+#    'Education': 'Educacion',
+#    'EducationField': 'CampoDeEducacion',
+#    'EmployeeID': 'IDEmpleado',
+#    'Gender': 'Genero',
+#    'JobLevel': 'NivelDeTrabajo',
+#    'JobRole': 'RolDeTrabajo',
+#    'MaritalStatus': 'EstadoCivil',
+#    'MonthlyIncome': 'IngresoMensual',
+#    'NumCompaniesWorked': 'NumEmpresasTrabajadas',
+#    'PercentSalaryHike': 'AumentoSalarioPorcentual',
+#    'StockOptionLevel': 'NivelOpcionesAcciones',
+#    'TotalWorkingYears': 'AñosTotalesTrabajados',
+#    'TrainingTimesLastYear': 'VecesEntrenadoUltimoAnio',
+#    'YearsAtCompany': 'AñosEnLaEmpresa',
+#    'YearsSinceLastPromotion': 'AñosDesdeUltimaPromocion',
+#    'YearsWithCurrManager': 'AñosConActualGerente',
+#    'EnvironmentSatisfaction': 'SatisfaccionAmbienteLab',
+#    'JobSatisfaction': 'SatisfaccionLaboral',
+#    'WorkLifeBalance': 'EquilibrioVidaLaboral',
+#    'JobInvolvement': 'InvolucramientoLaboral',
+#    'PerformanceRating': 'CalificacionDeDesempeño',
+#    'retirementDate': 'FechaDeRetiro',
+#    'retirementType': 'TipoDeRetiro',
+#    'resignationReason': 'MotivoDeRenuncia',
+#    'Attrition': 'Retirado'
+#}
 
 # Aplicar el cambio de nombres al DataFrame
-df_final.rename(columns=nombres_traducidos, inplace=True)
+#df_final.rename(columns=nombres_traducidos, inplace=True)
 
 # cambiar el tipo de variable IDEmpleado 
-df_final['IDEmpleado'] = df_final['IDEmpleado'].astype(str)
+df_final['EmployeeID'] = df_final['EmployeeID'].astype(str)
 
 df_final.info()
 df_final.describe
