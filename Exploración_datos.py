@@ -188,29 +188,68 @@ plt.title("Matriz de Correlación de Variables Numéricas")
 plt.show()
 
 ### Selección de variables ###
-pd.set_option('display.max_columns', None)
-print(df_final)
-
 df_final_V2 = df_final.copy()
 
-# Para cambiar el tipo de dato puede utilizar la función astype de pandas
-df_final_V2.BusinessTravel = df_final_V2['BusinessTravel'].astype(str)
-df_final_V2.Department = df_final_V2['Department'].astype(str)
-df_final_V2.Gender = df_final_V2['Gender'].astype(str)
-df_final_V2.JobRole = df_final_V2['JobRole'].astype(str)
-df_final_V2.MaritalStatus = df_final_V2['MaritalStatus'].astype(str)
+# convertir las variables categoricas en dummies
+df_final_V2 = pd.get_dummies(df_final_V2, columns=['BusinessTravel', 'Department', 'Gender', 'JobRole', 'MaritalStatus', 'EducationField'])
 
-# Convierta las columnas en variables dummy utilizando pd.get_dummies()
-df_final_V2 = pd.get_dummies(df_final_V2, columns=['BusinessTravel', 'Department', 'Gender', 'JobRole', 'MaritalStatus'])
-# Imprimir primeras 3 filas
+# cambiar el tipo de las variables dummies a int
+for column in ['BusinessTravel', 'Department', 'Gender', 'JobRole', 'MaritalStatus', 'EducationField']:
+    for dummy_variable in df_final_V2.columns:
+        if dummy_variable.startswith(column):
+            df_final_V2[dummy_variable] = df_final_V2[dummy_variable].astype(int)
+
+# Print the first 3 rows
 df_final_V2.head()
 
 ### Seleccion de variables por metodo Wrapper ###
 #Backward selection
 df_final_V2_int = df_final_V2.select_dtypes(include = ["number"]) # filtrar solo variables númericas
-df_final_V2_int = df_final_V2.drop('Attrition', axis = 1)
+#df_final_V2_int = df_final_V2_int.drop(['Attrition', 'retirementDate'], axis = 1) # excluir 'Attrition' y 'retirementDate'
 y = df_final_V2['Attrition']
 df_final_V2_int.head()
+
+# Normalización de variables categoricas ordinales
+from sklearn.preprocessing import MinMaxScaler
+df_final_V2_norm = df_final_V2_int.copy(deep = True)  # crear una copia del DataFrame
+scaler = MinMaxScaler()  # asignar el tipo de normalización
+sv = scaler.fit_transform(df_final_V2_norm.iloc[:, :])  # normalizar los datos
+df_final_V2_norm.iloc[:, :] = sv  # asignar los nuevos datos
+df_final_V2_norm.head()
+
+from sklearn.feature_selection import RFE
+# Función recursiva de selección de características
+def recursive_feature_selection(X,y,model,k): #model=modelo que me va a servir de estimador para seleccionar las variables
+                                              # K = variables que se quiere tener al final
+  rfe = RFE(model, n_features_to_select=k, step=1)# step=1 cada cuanto el toma la sicesion de tomar una caracteristica; paso de analisis de caracteristicas
+  fit = rfe.fit(X, y)
+  c2_var = fit.support_
+  print("Num Features: %s" % (fit.n_features_))
+  print("Selected Features: %s" % (fit.support_))
+  print("Feature Ranking: %s" % (fit.ranking_))
+
+  return c2_var # estimador de las variables seleccioandas
+
+# Establecer Estimador
+model = LinearRegression() # algoritmo a travez del cual se van a encontrar las variables
+
+# Obtener columnas seleciconadas - (3 caracteristicas)
+df_final_V2_var = recursive_feature_selection(df_final_V2_norm, y, model,7) # x_int =  conjunto caracteristicas numericas
+                                                        # y = variable respueta
+                                                        # model = modelo que se definio para estimar variables
+                                                        # k = numero de variables que se quiere al final
+
+# Nuevo conjunto de datos
+df_final_V3 = df_final_V2_int.iloc[:,df_final_V2_var]
+df_final_V3.head()
+
+#NOTA
+#En la anterior tabla se muestran las 7 variables de 
+#mayor importancia que se obtuvieron  despues de 
+#utilizar un algoritmo de regresion lineal en el
+# modelo empleado para la seleccion de variables en el metodo wrapper
+
+
 
 #df_final_V2.fillna(0, inplace=True)
 # Separación de caracteristicas y target
