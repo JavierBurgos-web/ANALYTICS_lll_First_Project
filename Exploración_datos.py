@@ -1,4 +1,4 @@
-
+### Cargar paquetes
 import warnings
 warnings.filterwarnings("ignore")
 import pandas as pd
@@ -6,6 +6,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import chi2_contingency
+import sys
 from sklearn.linear_model import LinearRegression, Ridge, RidgeCV, Lasso
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
@@ -76,51 +77,51 @@ plt.xlabel('FechaDeRetiro')
 plt.ylabel('Empleados retirados')
 plt.show()
 
-### explorar variables categóricas  ###
-for column in ['BusinessTravel', 'Department', 'EducationField', 'Gender', 'JobRole', 'MaritalStatus','resignationReason']:
-    plt.figure(figsize=(10, 6))
-    sns.countplot(x=column, data=df_final)
-    plt.title(f'Distribution of {column}')
-    plt.show()
+### explorar variables categóricas
+# Configurar estilo de Seaborn
+sns.set(style="whitegrid")
+plt.figure(figsize=(16, 10))
 
+# Lista de variables categóricas
+categories = ['BusinessTravel', 'Department', 'EducationField', 'Gender', 'JobRole', 'MaritalStatus', 'resignationReason']
 
-### Variable respuesta VS categoricas  ###
-    
-fig, axs = plt.subplots(3, 5, figsize=(14, 8))
+# Iterar sobre las variables y crear gráficas en un solo gráfico
+for i, column in enumerate(categories, start=1):
+    plt.subplot(2, 4, i)
+    sns.countplot(x=column, data=df_final, palette='Set3')  # Puedes ajustar la paleta según tus preferencias
+    plt.title(f'Distribution of {column}', fontsize=14)
+    plt.xlabel("")  # Eliminar la etiqueta del eje x para mejorar el diseño
+    plt.xticks(rotation=45, ha='right')  # Rotar las etiquetas del eje x para mejorar la legibilidad
 
-gráficos = [
-    'EnvironmentSatisfaction',
-    'JobSatisfaction',
-    'WorkLifeBalance',
-    'BusinessTravel',
-    'Department',
-    'Education',
-    'EducationField',
-    'Gender',
-    'JobLevel',
-    'JobRole',
-    'MaritalStatus',
-    'StockOptionLevel',
-    'TrainingTimesLastYear',
-    'JobInvolvement',
-    'PerformanceRating',
-]
-
-for i, gráfico in enumerate(gráficos):
-    axs[i // 5, i % 5].plot(df_final.groupby(gráfico)['Attrition'].value_counts().unstack())
-    axs[i // 5, i % 5].set_title(gráfico)
-    # Girar las etiquetas del eje x
-    axs[i // 5, i % 5].set_xticklabels(axs[i // 5, i % 5].get_xticklabels(), rotation=90)
-
-plt.subplots_adjust(wspace=0.25, hspace=3.5)
-plt.legend(['No', 'Sí'], loc='lower right')
-plt.suptitle('Análisis de Attrition')
+plt.suptitle('Exploration of Categorical Variables', y=1.02, fontsize=16)
+plt.tight_layout()
 plt.show()
 
-# Seleccionar solo las columnas categóricas
+### Variable respuesta VS categoricas  ###   
+variables_analisis = [
+    'EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance',
+    'BusinessTravel', 'Department', 'Education', 'EducationField', 'Gender',
+    'JobLevel', 'JobRole', 'MaritalStatus', 'StockOptionLevel',
+    'TrainingTimesLastYear', 'JobInvolvement', 'PerformanceRating'
+]
+sns.set(style="whitegrid")
+fig, axs = plt.subplots(3, 5, figsize=(14, 8))
+fig.suptitle('Análisis de Attrition', fontsize=16)
+
+for var, ax in zip(variables_analisis, axs.flatten()):
+    sns.countplot(x=var, hue='Attrition', data=df_final, ax=ax, palette='viridis')
+    ax.set_title(var, fontsize=12)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
+
+plt.subplots_adjust(wspace=0.25, hspace=1.5)
+
+plt.legend(title='Attrition', bbox_to_anchor=(1.05, 2), loc='upper left')
+plt.show()
+
+### Seleccionar solo las columnas categóricas
 df_categoricas = df_final.select_dtypes(include=['category'])
 
-# Crear una matriz vacía para almacenar los valores de p-valor
+### Crear una matriz vacía para almacenar los valores de p-valor
 p_values = []
 
 # Correlación de chi-cuadrado y los p-valores
@@ -145,33 +146,32 @@ plt.title("Matriz de Asociación (p-Valores) entre Variables Categóricas")
 plt.show()
 
 ### Attrition (Categorica) vs numericas ###
-
 # Crear una figura con tres filas y cinco columnas
-fig, axs = plt.subplots(2, 5, figsize=(25, 7))
+fig, axs = plt.subplots(2, 5, figsize=(18, 8))
+fig.suptitle('Attrition (Categorica) vs Variables Numericas', fontsize=16)
+
+# Colores para Attrition (0: 'blue', 1: 'orange')
+colors = {0: 'blue', 1: 'orange'}
 
 # Crear los gráficos
-for i, gráfico in enumerate(
+for i, variable in enumerate(
     [
-        'Age',
-        'DistanceFromHome',
-        'MonthlyIncome',
-        'NumCompaniesWorked',
-        'PercentSalaryHike',
-        'YearsAtCompany',
-        'YearsSinceLastPromotion',
-        'YearsWithCurrManager',
-        'TotalWorkingYears',
+        'Age', 'DistanceFromHome', 'MonthlyIncome', 'NumCompaniesWorked',
+        'PercentSalaryHike', 'YearsAtCompany', 'YearsSinceLastPromotion',
+        'YearsWithCurrManager', 'TotalWorkingYears',
     ]
 ):
     # Crear un gráfico de dispersión para la variable numérica
-    axs[i // 5, i % 5].scatter(
-        df_final[gráfico], df_final['Attrition'], alpha=0.5, s=10, 
-        c=df_final['Attrition'].map({0: 'blue', 1: 'orange'}),
-    )
-    # Agregar una leyenda
-    axs[i // 5, i % 5].set_title(gráfico)
-    # Ajustar el diseño de la figura
-    plt.subplots_adjust(wspace=0.2, hspace=0.6)
+    sns.scatterplot(x=df_final[variable], y=df_final['Attrition'], ax=axs[i // 5, i % 5], alpha=0.5, s=30, hue=df_final['Attrition'], palette=colors)
+    
+    # Ajustar etiquetas y título de la gráfica
+    axs[i // 5, i % 5].set_title(variable, fontsize=12)
+    axs[i // 5, i % 5].set_xlabel(variable)
+    axs[i // 5, i % 5].set_ylabel('Attrition')
+    axs[i // 5, i % 5].legend().set_visible(False)
+
+# Ajustar el diseño de la figura
+plt.subplots_adjust(wspace=0.5, hspace=0.6)
 
 # Mostrar la figura
 plt.show()
@@ -186,6 +186,7 @@ plt.figure(figsize=(10, 8))
 sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="RdBu", mask=mask)
 plt.title("Matriz de Correlación de Variables Numéricas")
 plt.show()
+
 
 ### Selección de variables ###
 df_final_V2 = df_final.copy()
