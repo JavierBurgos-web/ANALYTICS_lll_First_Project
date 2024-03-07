@@ -28,22 +28,24 @@ df.info()
 ##se separan columnas categóricas o que se quieran tratar así de las numéricas
 
 list_cat=['BusinessTravel', 'Department', 'Gender', 
-          'JobRole', 'MaritalStatus', 'EducationField']
+          'JobRole', 'MaritalStatus', 'EducationField','retirementDate', 'resignationReason']
 
 df1=funciones.imputar_f(df,list_cat)
 df1.info()
 
 # convertir las variables categoricas en dummies
-df_final_V2 = pd.get_dummies(df_final_V2, columns=['BusinessTravel', 'Department', 'Gender', 'JobRole', 'MaritalStatus', 'EducationField'])
+list_dummies=['BusinessTravel', 'Department', 'Gender', 
+          'JobRole', 'MaritalStatus', 'EducationField','retirementDate', 'resignationReason']
 
-# cambiar el tipo de las variables dummies a int
-for column in ['BusinessTravel', 'Department', 'Gender', 'JobRole', 'MaritalStatus', 'EducationField']:
-    for dummy_variable in df_final_V2.columns:
-        if dummy_variable.startswith(column):
-            df_final_V2[dummy_variable] = df_final_V2[dummy_variable].astype(int)
 
-# Print the first 3 rows
-df_final_V2.head()
+df_dummies=pd.get_dummies(df1,columns=list_dummies)
+df_dummies.info()
+
+
+
+
+
+
 
 ### Seleccion de variables por metodo Wrapper ###
 #Backward selection
