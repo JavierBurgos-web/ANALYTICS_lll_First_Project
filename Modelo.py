@@ -43,6 +43,89 @@ df_dummies.info()
 
 
 
+#-------------
+y=df_dummies.Attrition
+X1= df_dummies.loc[:,~df_dummies.columns.isin(['Attrition','EmployeeID'])]
+
+scaler=StandardScaler()
+scaler.fit(X1)
+X2=scaler.transform(X1)
+X=pd.DataFrame(X2,columns=X1.columns)
+
+m_lreg = linear_model.LinearRegression()
+m_rtree=tree.DecisionTreeRegressor()
+m_rf= RandomForestRegressor()
+m_gbt=GradientBoostingRegressor()
+
+modelos=list([m_lreg,m_rtree, m_rf, m_gbt])
+
+var_names=funciones.sel_variables(modelos,X,y,threshold="2.5*mean")
+var_names.shape
+#-------------
+X2=X[var_names] ### matriz con variables seleccionadas
+X2.info()
+X.info()
+
+
+#----------------
+rmse_df=funciones.medir_modelos(modelos,"neg_root_mean_squared_error",X,y,4) ## base con todas las variables 
+rmse_varsel=funciones.medir_modelos(modelos,"neg_root_mean_squared_error",X2,y,4) ### base con variables seleccionadas
+
+
+rmse=pd.concat([rmse_df,rmse_varsel],axis=1)
+rmse.columns=['rl', 'dt', 'rf', 'gb',
+       'rl_Sel', 'dt_sel', 'rf_sel', 'gb_Sel']
+
+
+rmse_df.plot(kind='box') #### gráfico para modelos todas las varibles
+rmse_varsel.plot(kind='box') ### gráfico para modelo variables seleccionadas
+rmse.plot(kind='box') ### gráfico para modelos sel y todas las variables
+
+rmse2=rmse[ ['dt', 'rf', 'gb','rl_Sel', 'dt_sel', 'rf_sel', 'gb_Sel']]
+rmse2.plot(kind='box') ### gráfico para modelos sel y todas las variables
+
+rmse.mean() ### medias de mape
+#----------------
+
+
+#----------------
+param_grid = [{'n_estimators': [3, 500, 100], 'max_features': [5,20],
+               'min_samples_split': [100, 20, 5]}]
+
+tun_rf=RandomizedSearchCV(m_rf,param_distributions=param_grid,n_iter=6,scoring="neg_root_mean_squared_error")
+tun_rf.fit(X2,y)
+### se comenta porque toma mucho tiempo en ejecutar
+
+pd.set_option('display.max_colwidth', 100)
+resultados=tun_rf.cv_results_
+tun_rf.best_params_
+pd_resultados=pd.DataFrame(resultados)
+pd_resultados[["params","mean_test_score"]].sort_values(by="mean_test_score", ascending=False)
+
+rf_final=tun_rf.best_estimator_ ### Guardar el modelo con hyperparameter tunning
+m_lreg=m_lreg.fit(X2,y)
+#----------------
+
+
+### función para exportar y guardar objetos de python (cualqueira)
+
+joblib.dump(rf_final, "salidas\\rf_final.pkl") ## 
+joblib.dump(m_lreg, "salidas\\m_lreg.pkl") ## 
+joblib.dump(list_cat, "salidas\\list_cat.pkl") ### para realizar imputacion
+joblib.dump(list_dummies, "salidas\\list_dummies.pkl")  ### para convertir a dummies
+joblib.dump(var_names, "salidas\\var_names.pkl")  ### para variables con que se entrena modelo
+joblib.dump(scaler, "salidas\\scaler.pkl") ## 
+
+
+
+### funcion para cargar objeto guardado ###
+rf_final = joblib.load("salidas\\rf_final.pkl")
+m_lreg = joblib.load("salidas\\m_lreg.pkl")
+list_cat=joblib.load("salidas\\list_cat.pkl")
+list_dummies=joblib.load("salidas\\list_dummies.pkl")
+var_names=joblib.load("salidas\\var_names.pkl")
+scaler=joblib.load("salidas\\scaler.pkl") 
+#----------------
 
 
 
