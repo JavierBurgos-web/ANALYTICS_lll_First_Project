@@ -109,7 +109,7 @@ m_lreg=m_lreg.fit(X2,y)
 
 ### función para exportar y guardar objetos de python (cualqueira)
 
-joblib.dump(rf_final, "salidas\\rf_final.pkl") ## 
+joblib.dump(df_final, "salidas\\rf_final.pkl") ## 
 joblib.dump(m_lreg, "salidas\\m_lreg.pkl") ## 
 joblib.dump(list_cat, "salidas\\list_cat.pkl") ### para realizar imputacion
 joblib.dump(list_dummies, "salidas\\list_dummies.pkl")  ### para convertir a dummies
