@@ -59,7 +59,7 @@ m_gbt=GradientBoostingRegressor()
 
 modelos=list([m_lreg,m_rtree, m_rf, m_gbt])
 
-var_names=funciones.sel_variables(modelos,X,y,threshold="2.5*mean")
+var_names=funciones.sel_variables(modelos,X,y,threshold="2.5*mean") #No funciona con Vector machine
 var_names.shape
 #-------------
 X2=X[var_names] ### matriz con variables seleccionadas
@@ -68,7 +68,7 @@ X.info()
 
 
 #----------------
-rmse_df=funciones.medir_modelos(modelos,"neg_root_mean_squared_error",X,y,4) ## base con todas las variables 
+rmse_df=funciones.medir_modelos(modelos,"neg_root_mean_squared_error",X,y,4) ## base con todas las variables #4: Número de grupos en que va a separar los datos para realizar el cross validation
 rmse_varsel=funciones.medir_modelos(modelos,"neg_root_mean_squared_error",X2,y,4) ### base con variables seleccionadas
 
 
