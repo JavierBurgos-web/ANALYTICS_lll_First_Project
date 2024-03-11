@@ -199,6 +199,7 @@ df_final_V3.head()
 #print("Tamaño del conjunto de validación:", X_test.shape )
 
 
+
 #Nombre de caracteristicas númericas
 #numeric_columns=list(X.select_dtypes('float64').columns)
 
