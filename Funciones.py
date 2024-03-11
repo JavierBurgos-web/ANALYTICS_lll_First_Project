@@ -84,7 +84,7 @@ def preparar_datos (df):
     
     df=imputar_f(df,list_cat)
     df_dummies=pd.get_dummies(df,columns=list_dummies)
-    df_dummies= df_dummies.loc[:,~df_dummies.columns.isin(['perf_2023','EmpID2'])]
+    df_dummies= df_dummies.loc[:,~df_dummies.columns.isin(['Attrition','EmployeeID'])]
     X2=scaler.transform(df_dummies)
     X=pd.DataFrame(X2,columns=df_dummies.columns)
     X=X[var_names]
