@@ -186,7 +186,7 @@ plt.figure(figsize=(10, 8))
 sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="RdBu", mask=mask)
 plt.title("Matriz de Correlación de Variables Numéricas")
 plt.show()
-
+#-----------------------------------------------------------------
 
 ### Selección de variables ###
 df_final_V2 = df_final.copy()

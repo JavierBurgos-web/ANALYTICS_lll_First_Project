@@ -1,7 +1,7 @@
 ### Cargar paquetes 
 import pandas as pd ### para manejo de datos
 import sqlite3 as sql #### para bases de datos sql
-#import a_funciones as funciones  ###archivo de funciones propias
+import Funciones as funciones  ###archivo de funciones propias
 import sys ## saber ruta de la que carga paquetes
 import seaborn as sns
 import matplotlib.pyplot as plt
