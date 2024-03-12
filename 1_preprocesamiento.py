@@ -22,6 +22,10 @@ df_general=pd.read_csv(general)
 df_manager=pd.read_csv(manager)
 df_retirement=pd.read_csv(retirement)
 
+#Filtro de fecha de retiro a año 2016 
+df_retirement['retirementDate'] = pd.to_datetime(df_retirement['retirementDate'])
+df_retirement = df_retirement[df_retirement['retirementDate'].dt.year == 2016 ]  
+df_retirement['retirementDate'].value_counts()
 ### Verificar lectura correcta de los datos
 df_employees.sort_values(by=['EmployeeID'],ascending=1).head(100)
 df_general.sort_values(by=['EmployeeID'],ascending=0).head(5)
