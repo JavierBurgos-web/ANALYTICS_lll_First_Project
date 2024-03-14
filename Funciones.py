@@ -87,8 +87,8 @@ def preparar_datos(df):
 
     # Crear variables dummy y escalar los datos
     df_dummies = pd.get_dummies(df_processed, columns=list_dummies)
-    df_dummies = df_dummies.loc[:, ~df_dummies.columns.isin(['Attrition', 'EmployeeID'])]
+    df_dummies = df_dummies.loc[:, ~df_dummies.columns.isin(['Attrition', 'EmployeeID', 'retirementDate', 'resignationReason'])]
     X_scaled = scaler.transform(df_dummies)
     X = pd.DataFrame(X_scaled, columns=df_dummies.columns)[var_names]
-
+  
     return X
