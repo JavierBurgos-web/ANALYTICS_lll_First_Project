@@ -13,27 +13,28 @@ df_final = "DATA/df_final.csv"
 df = pd.read_csv(df_final)
 
 
-df_t= funciones.preparar_datos(df_final)
+df_t= funciones.preparar_datos(df)
 
 
 
 # Cargar modelo entrenado
-m_lreg = joblib.load("salidas\\m_lreg.pkl")
+rf_final = joblib.load("salidas\\rf_final.pkl")
 
 # Realizar predicciones
-predicciones = m_lreg.predict(df)
-pd_pred = pd.DataFrame(predicciones, columns=['pred_perf_2024'])
+predicciones = rf_final.predict(df_t)
+pd_pred = pd.DataFrame(predicciones, columns=['Atrition'])
 
 # Crear DataFrame con predicciones
 perf_pred = pd.concat([df['EmployeeID'], df_t, pd_pred], axis=1)
 
 # Guardar predicciones en archivos
-perf_pred[['EmployeeID', 'pred_perf_2024']].to_excel("salidas\\prediccion.xlsx")
-coeficientes = pd.DataFrame(np.append(m_lreg.intercept_, m_lreg.coef_), columns=['coeficientes'])
-coeficientes.to_excel("salidas\\coeficientes.xlsx")
+perf_pred[['EmployeeID', 'Atrition']].to_excel("salidas\\prediccion.xlsx")
+#Guardar importancia de las caracteristicas a la hora de predecir
+importances = pd.DataFrame(rf_final.feature_importances_, columns=['importances'])
+importances.to_excel("salidas\\importances.xlsx")
 
 # Ver las 10 predicciones más bajas
-emp_pred_bajo = perf_pred.sort_values(by=["pred_perf_2024"], ascending=True).head(10)
-emp_pred_bajo.set_index('EmpID2', inplace=True)
+emp_pred_bajo = perf_pred.sort_values(by=["Atrition"], ascending=True).head(10)
+emp_pred_bajo.set_index('EmployeeID', inplace=True)
 pred = emp_pred_bajo.T
 print(pred)
