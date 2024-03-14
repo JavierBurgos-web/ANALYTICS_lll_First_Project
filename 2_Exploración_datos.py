@@ -244,42 +244,4 @@ df_final_V2_var = recursive_feature_selection(df_final_V2_norm, y, model,7) # x_
 df_final_V3 = df_final_V2_int.iloc[:,df_final_V2_var]
 df_final_V3.head()
 
-#NOTA
-#En la anterior tabla se muestran las 7 variables de 
-#mayor importancia que se obtuvieron  despues de 
-#utilizar un algoritmo de regresion lineal en el
-# modelo empleado para la seleccion de variables en el metodo wrapper
 
-
-
-#df_final_V2.fillna(0, inplace=True)
-# Separación de caracteristicas y target
-#X_class = df_final_V2.drop(['Attrition'], axis=1)
-#y_class = df_final_V2['Attrition']
-
-#print(X_class.shape)
-#print(y_class.shape)
-# Separación de caracteristicas y Attrition (X , y)
-#y = df_final_V2.Attrition
-#X = df_final_V2.drop(["Attrition"], axis = 1)
-# Separación en conjuntos de entrenamiento y validación con 80% de muestras para entrenamiento
-
-#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42)
-
-#Imprimir Tamaño de dataset
-
-#print("Tamaño del conjunto de entrenamiento:",X_train.shape )
-#print("Tamaño del conjunto de validación:", X_test.shape )
-
-
-#Nombre de caracteristicas númericas
-#numeric_columns=list(X.select_dtypes('float64').columns)
-
-#Estandarización de variables númericas
-#pipeline=ColumnTransformer([("std_num", StandardScaler() , numeric_columns)], remainder='passthrough')
-#X_train_std = pipeline.fit_transform(X_train)
-#X_test_std = pipeline.transform(X_test)
-
-#Separación de caracteristicas númericas y categóricas
-#numeric_columns=list(X.select_dtypes('float64').columns)
-#categorical_columns=list(X.select_dtypes('object').columns)
