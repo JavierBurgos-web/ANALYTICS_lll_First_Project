@@ -30,8 +30,10 @@ perf_pred = pd.concat([df['EmployeeID'], df_t, pd_pred], axis=1)
 # Guardar predicciones en archivos
 perf_pred[['EmployeeID', 'Atrition']].to_excel("salidas\\prediccion.xlsx")
 #Guardar importancia de las caracteristicas a la hora de predecir
-importances = pd.DataFrame(rf_final.feature_importances_, columns=['importances'])
+feature_names = df_t.columns
+importances = pd.DataFrame({'Feature': feature_names, 'Importance': rf_final.feature_importances_})
 importances.to_excel("salidas\\importances.xlsx")
+
 
 # Ver las 10 predicciones más bajas
 emp_pred_bajo = perf_pred.sort_values(by=["Atrition"], ascending=True).head(10)
