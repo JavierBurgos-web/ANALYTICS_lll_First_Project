@@ -65,31 +65,30 @@ def medir_modelos(modelos,scoring,X,y,cv):
 
 
 
-def preparar_datos (df):
-   
-    
+def preparar_datos(df):
+    # Cargar listas y modelo
+    list_cat = joblib.load("salidas\\list_cat.pkl")
+    list_dummies = joblib.load("salidas\\list_dummies.pkl")
+    var_names = joblib.load("salidas\\var_names.pkl")
+    scaler = joblib.load("salidas\\scaler.pkl")
 
-    #######Cargar y procesar nuevos datos ######
-   
-    
-    #### Cargar modelo y listas 
-    
-   
-    list_cat=joblib.load("salidas\\list_cat.pkl")
-    list_dummies=joblib.load("salidas\\list_dummies.pkl")
-    var_names=joblib.load("salidas\\var_names.pkl")
-    scaler=joblib.load( "salidas\\scaler.pkl") 
+    # Seleccionar solo las columnas numéricas
+    df_numeric = df.select_dtypes(include=['number'])
 
-    ####Ejecutar funciones de transformaciones
-    
-    df=imputar_f(df,list_cat)
-    df_dummies=pd.get_dummies(df,columns=list_dummies)
-    df_dummies= df_dummies.loc[:,~df_dummies.columns.isin(['Attrition','EmployeeID'])]
-    X2=scaler.transform(df_dummies)
-    X=pd.DataFrame(X2,columns=df_dummies.columns)
-    X=X[var_names]
-    
-    
-    
-    
+    # Imputar valores faltantes solo en las columnas numéricas
+    imputer = SimpleImputer(strategy='median')
+    df_numeric_imputed = pd.DataFrame(imputer.fit_transform(df_numeric), columns=df_numeric.columns)
+
+    # Mantener las columnas no numéricas sin cambios
+    df_non_numeric = df.select_dtypes(exclude=['number'])
+
+    # Concatenar las columnas numéricas imputadas con las columnas no numéricas originales
+    df_processed = pd.concat([df_numeric_imputed, df_non_numeric], axis=1)
+
+    # Crear variables dummy y escalar los datos
+    df_dummies = pd.get_dummies(df_processed, columns=list_dummies)
+    df_dummies = df_dummies.loc[:, ~df_dummies.columns.isin(['Attrition', 'EmployeeID'])]
+    X_scaled = scaler.transform(df_dummies)
+    X = pd.DataFrame(X_scaled, columns=df_dummies.columns)[var_names]
+
     return X
